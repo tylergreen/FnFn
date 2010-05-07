@@ -31,9 +31,12 @@ pLambda = do char '^'
 	     body <- pExpr
 	     return $ Lambda args body
 
+{-
 pLet :: Parser Expr
 pLet = do string "let"
        	  defs <- sepBy1 pDefs  
+          return 
+-}
 
 pStr :: Parser Expr
 pStr = do char '"'

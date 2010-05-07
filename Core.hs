@@ -20,13 +20,13 @@ getCode   (i,s,h,gs,stats) = i
 putCode i (_,s,h,gs,stats) = (i,s,h,g,stats)
 
 data Instruction  
-  =  | Unwind
-     | PushG Name
-     | PushI Int
-     | Push Int
-     | Mkap
-     | Slide Int
-   deriving (Eq)
+    =   Unwind
+    | PushG Name
+    | PushI Int
+    | Push Int
+    | Mkap
+    | Slide Int
+      deriving (Eq)
 
 instance Eq Instruction where
   Unwind  == Unwind  = True
@@ -48,6 +48,7 @@ type GmHeap = Heap Node
 getHeap (i, stack, heap, globals, stats) = heap
 putHeap heap (i, stack, _, globals, stats)
  = (i, stack, heap, globals, stats)
+
 
 data Node = NNum Int
           | NAp Addr Addr
@@ -388,6 +389,7 @@ data Node = NAp Addr Addr
 	  | NInd Addr
 	  | NPrim Name Primitive
 
+
 data Primitive = Neg | Add | Sub | Mul | Div
 
 type TiGlobals = [(Name,Addr)]
@@ -536,7 +538,7 @@ getargs :: TiHeap -> TiStack -> [Addr]
 getargs heap (sc:stack)
  = map get_arg stack
        where get_arg addr = arg
-          where (NAp fn arg) = hLookup heap addr
+             (NAp fn arg) = hLookup heap addr
 
 --workhorse function.  Does the interesting work
 instantiate :: Expr -> TiHeap -> [(Name,Addr)] -> (TiHeap, Addr)
