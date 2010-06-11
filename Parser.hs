@@ -3,7 +3,6 @@ module Parser where
 import Text.ParserCombinators.Parsec --hiding (spaces)
 import Monad
 
-
 pProg :: Parser Prog
 pProg = sepBy1 pSc (do spaces
       	       	       char ';'

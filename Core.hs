@@ -1,6 +1,5 @@
 module Core where
 
-import Text.ParserCombinators.Parsec --hiding (spaces)
 import Monad
 import Utils
 import Heap
@@ -263,96 +262,6 @@ iLayn :: [Iseq] -> Iseq
 iLayn seqs = iConcat (map lay_item (zip [1..] seqs))
         	where lay_item (n, seq) = iConcat [iFWNum 4 n, iStr ") ", iIndent seq, iNewline ]
 		 
--------------------------
---- Parser
-
--- need to encode the list shorthand, ie
--- (A x y z) = (((Ax) y ) z)
-
-parseProg :: Parser Prog
-parseProg = sepBy1 pSc spaces
-
-pSc :: Parser ScDefn
-pSc = do char '('
-    	 name <- word
-	 spaces
-	 args <- sepBy word spaces
-	 char ')'
-	 spaces
-	 char '='
-	 spaces
-	 body <- pExpr
-	 return $ (name, args, body)
-
-pExpr :: Parser Expr
-pExpr = pStr <|>
-        pAtom <|>
-	pNum <|>
-	pApp <|>
-	pLet <|>
-	pLam
-
-
--- ^(a 5) (b 3) $ (a b 3)
-
-pBind :: Parser (String, Expr)
-pBind = do char '('
-      	   spaces
-	   sym <- word
-	   spaces
-	   body <- pExpr
-	   char ')'
-	   return $ (sym, body)
-	   
-pLet :: Parser Expr
-pLet = do char '^'
-	  bindings <- many1 pBind
-	  spaces
-	  char '$'
-	  spaces
-	  body <- pExpr
-	  return $ Let Rec bindings body
-
-pStr :: Parser Expr
-pStr = do char '"'
-	  s <- many (noneOf "\"")
-	  char '"'
-	  return $ Str s
-
-pAtom :: Parser Expr 
-pAtom = do x <- letter <|> (oneOf "+-*/")
-	   xs <- many (letter <|> digit) 
-	   return $ Atom (x:xs)
-
-pNum :: Parser Expr
-pNum = liftM (Num . read) $ many1 digit
-
--- pApp hold the key to the left assoc. shorthand.
--- update your prolog to utilize this breakthrough
--- want to possibly end a list like: (a b c ) but can't *
-pApp :: Parser Expr
-pApp =  do char '('
-           spaces
-	   es <- sepBy1 pExpr spaces  -- * because of here
-	   char ')'
-	   return $ foldl1 App es
-
-word :: Parser String
-word = many1 letter
-
-pLam :: Parser Expr
-pLam = do string lambdaSym
-       	  char '('
-       	  spaces
-       	  args <- sepBy word spaces     
-	  spaces
-	  char '.'
-	  spaces
-	  body <- pExpr 
-	  spaces
-	  char ')'
-	  return $ Lambda args body
-
 ------------------
 -- Compiler
 
