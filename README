@@ -1,0 +1,13 @@
+Lazy graph reduction compilers described in "Implementing Functional Languages: a Tutorial"  book by Simpon Peyton Jones and David Lester  
+
+text available on-line at:
+http://research.microsoft.com/en-us/um/people/simonpj/papers/pj-lester-book/
+
+Code left as exercise in book is implemented here, all by Tyler Green.
+
+Experimental Grammar and Parser are by Tyler Green.
+
+
+
+
+
